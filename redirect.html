@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <h1 id="notify">Xin hãy đợi một chút !!!</h1>
+  <script>
+    getPublicIP(window.location.hash);
+    function getPublicIP(fragment) {
+      fetch("https://api.ipify.org?format=json")
+        .then((response) => response.json())
+        .then((data) => {
+          var public_ip = data.ip;
+          sendRequest(fragment, public_ip);
+        })
+        .catch((error) => {
+          alert("Cannot get public ip");
+          alert(error);
+          document.getElementById("notify").innerText =
+            "Bạn có thể trở về ứng dụng!";
+        });
+    }
+    function sendRequest(fragment, public_ip) {
+      let service_url = `${window.location.protocol}//${window.location.host}/fb_selling_supporter_backend/index.php`;
+      fetch(service_url, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "put_access_token",
+          payload: {
+            fragment: fragment,
+            public_ip: public_ip,
+          },
+        }),
+      })
+        .then((res) => res.text())
+        .then((data) => {
+          alert(data);
+          console.log(data);
+          document.getElementById("notify").innerText =
+            "Bạn có thể trở về ứng dụng!";
+        })
+        .catch((error) => {
+          alert("Cannot put access_token");
+          alert(error);
+          document.getElementById("notify").innerText =
+            "Bạn có thể trở về ứng dụng!";
+        });
+    }
+  </script>
+</html>
